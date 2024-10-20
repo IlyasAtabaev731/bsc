@@ -3,6 +3,8 @@
 // @version      1.1
 // @match        https://telegram.blum.codes/*
 // @grant        none
+// @updateURL    https://github.com/IlyasAtabaev731/bsc/raw/main/bsc2.js
+// @downloadURL  https://github.com/IlyasAtabaev731/bsc/raw/main/bsc2.js
 // ==/UserScript==
 
 (function() {
