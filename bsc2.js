@@ -1,8 +1,11 @@
 // ==UserScript==
 // @name         Кликер и удаление кнопок
 // @version      1.1
+// @namespace    KittenWoof
+// @author       KittenWoof
 // @match        https://telegram.blum.codes/*
 // @grant        none
+// @icon         https://raw.githubusercontent.com/ilfae/ilfae/main/logo.webp
 // @updateURL    https://github.com/IlyasAtabaev731/bsc/raw/main/bsc2.js
 // @downloadURL  https://github.com/IlyasAtabaev731/bsc/raw/main/bsc2.js
 // ==/UserScript==
