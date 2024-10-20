@@ -15,8 +15,8 @@ let GAME_SETTINGS = {
     clickPercentage: {
         bomb: 0,
         ice: 30,
-        flower: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
-        dogs: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
+        flower: Math.floor(Math.random() * (90 - 89 + 1)) + 89,
+        dogs: Math.floor(Math.random() * (90 - 89 + 1)) + 89,
     },
     autoClickPlay: true,
 };
