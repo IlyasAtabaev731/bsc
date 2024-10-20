@@ -6,13 +6,13 @@
 // @match        https://telegram.blum.codes/*
 // @grant        none
 // @icon         https://raw.githubusercontent.com/ilfae/ilfae/main/logo.webp
-// @updateURL    http://m90237h7.beget.tech/private_filer/BlumFarm.user.js
-// @downloadURL  http://m90237h7.beget.tech/private_filer/BlumFarm.user.js
+// @updateURL    https://github.com/IlyasAtabaev731/bsc/raw/main/!BlumFarm!.user.js
+// @downloadURL  https://github.com/IlyasAtabaev731/bsc/raw/main/!BlumFarm!.user.js
 // ==/UserScript==
 
 let GAME_SETTINGS = {
     clickPercentage: {
-        bomb: 1,
+        bomb: 0,
         ice: 30,
         flower: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
         dogs: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
