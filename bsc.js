@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         !BlumFarm!
 // @version      2.4.4
-// @namespace    KittenWoof
+// @namespace    Violentmonkey Scripts
 // @author       KittenWoof
 // @match        https://telegram.blum.codes/*
 // @grant        none
 // @icon         https://raw.githubusercontent.com/ilfae/ilfae/main/logo.webp
 // @updateURL    https://github.com/IlyasAtabaev731/bsc/raw/main/bsc.js
 // @downloadURL  https://github.com/IlyasAtabaev731/bsc/raw/main/bsc.js
+// @homepage     https://github.com/IlyasAtabaev731/bsc
 // ==/UserScript==
 
 let GAME_SETTINGS = {
