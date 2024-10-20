@@ -6,8 +6,8 @@
 // @match        https://telegram.blum.codes/*
 // @grant        none
 // @icon         https://raw.githubusercontent.com/ilfae/ilfae/main/logo.webp
-// @updateURL    https://github.com/IlyasAtabaev731/bsc/raw/main/bsc.js
-// @downloadURL  https://github.com/IlyasAtabaev731/bsc/raw/main/bsc.js
+// @updateURL    https://github.com/IlyasAtabaev731/bsc/raw/main/bsc.user.js
+// @downloadURL  https://github.com/IlyasAtabaev731/bsc/raw/main/bsc.user.js
 // @homepage     https://github.com/IlyasAtabaev731/bsc
 // ==/UserScript==
 
