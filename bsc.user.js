@@ -13,7 +13,7 @@
 
 let GAME_SETTINGS = {
     clickPercentage: {
-        bomb: 0,
+        bomb: 100,
         ice: 30,
         flower: Math.floor(Math.random() * (90 - 89 + 1)) + 89,
         dogs: Math.floor(Math.random() * (90 - 89 + 1)) + 89,
