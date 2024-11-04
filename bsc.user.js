@@ -13,7 +13,7 @@
 
 let GAME_SETTINGS = {
     clickPercentage: {
-        bomb: 100,
+        bomb: 0,
         ice: 30,
         flower: Math.floor(Math.random() * (90 - 89 + 1)) + 89,
         dogs: Math.floor(Math.random() * (90 - 89 + 1)) + 89,
@@ -61,6 +61,16 @@ try {
                 break;
             case "DOGS":
                 if (randomValue < GAME_SETTINGS.clickPercentage.dogs) {
+                    await clickElementWithDelay(element);
+                }
+                break;
+            case "TRUMP":
+                if (randomValue < GAME_SETTINGS.clickPercentage.flower) {
+                    await clickElementWithDelay(element);
+                }
+                break;
+            case "HARRIS":
+                if (randomValue < GAME_SETTINGS.clickPercentage.flower) {
                     await clickElementWithDelay(element);
                 }
                 break;
