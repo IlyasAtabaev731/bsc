@@ -65,12 +65,12 @@ try {
                 }
                 break;
             case "TRUMP":
-                if (randomValue < GAME_SETTINGS.clickPercentage.flower) {
+                if (randomValue < 100) {
                     await clickElementWithDelay(element);
                 }
                 break;
             case "HARRIS":
-                if (randomValue < GAME_SETTINGS.clickPercentage.flower) {
+                if (randomValue < 100) {
                     await clickElementWithDelay(element);
                 }
                 break;
