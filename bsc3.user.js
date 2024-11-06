@@ -176,7 +176,7 @@ try {
 		const playButtons = document.querySelectorAll('button.kit-button.is-large.is-primary, a.play-btn[href="/game"], button.kit-button.is-large.is-primary');
 
 		playButtons.forEach(button => {
-			if (!isGamePaused && GAME_SETTINGS.autoClickPlay && button.textContent.trim().length > 0) {
+			if (GAME_SETTINGS.autoClickPlay && button.textContent.trim().length > 0) {
 				setTimeout(() => {
 					gameStats.isGameOver = true;
 					resetGameStats();
