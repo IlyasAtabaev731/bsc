@@ -14,9 +14,11 @@
 let GAME_SETTINGS = {
     clickPercentage: {
         bomb: 0,
-        ice: 30,
-        flower: Math.floor(Math.random() * (90 - 89 + 1)) + 89,
-        dogs: Math.floor(Math.random() * (90 - 89 + 1)) + 89,
+        ice: Math.floor(Math.random() * 2) + 2,
+        flower: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
+        dogs: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
+        trump: 100,
+        harris: 100,
     },
     autoClickPlay: true,
 };
@@ -26,6 +28,13 @@ let isSettingsOpen = false;
 
 try {
     let gameStats = {
+        score: 0,
+        bombHits: 0,
+        iceHits: 0,
+        dogsHits: 0,
+        trumpHits: 0,
+        harrisHits: 0,
+        flowersSkipped: 0,
         isGameOver: false,
     };
 
@@ -65,12 +74,12 @@ try {
                 }
                 break;
             case "TRUMP":
-                if (randomValue < 100) {
+                if (randomValue < GAME_SETTINGS.clickPercentage.trump) {
                     await clickElementWithDelay(element);
                 }
                 break;
             case "HARRIS":
-                if (randomValue < 100) {
+                if (randomValue < GAME_SETTINGS.clickPercentage.harris) {
                     await clickElementWithDelay(element);
                 }
                 break;
@@ -103,7 +112,10 @@ try {
         const playButtons = document.querySelectorAll('button.kit-button.is-large.is-primary, a.play-btn[href="/game"], button.kit-button.is-large.is-primary');
 
         playButtons.forEach(button => {
-            if (!isGamePaused && GAME_SETTINGS.autoClickPlay && (/Play/.test(button.textContent) || /Continue/.test(button.textContent))) {
+            const buttonText = button.textContent.trim();
+            if (!isGamePaused && GAME_SETTINGS.autoClickPlay &&
+                (/Play/i.test(buttonText) || /Continue/i.test(buttonText) ||
+                 /Играть/i.test(buttonText) || /Продолжить/i.test(buttonText))) {
                 setTimeout(() => {
                     button.click();
                     gameStats.isGameOver = false;
@@ -111,9 +123,41 @@ try {
             }
         });
     }
+    function checkAndClickResetButton() {
+        const errorPage = document.querySelector('div[data-v-26af7de6].error.page.wrapper');
+        if (errorPage) {
+            const resetButton = errorPage.querySelector('button.reset');
+            if (resetButton) {
+                resetButton.click();
+            }
+        }
+    }
+
+    function AutoClaimAndStart() {
+        setInterval(() => {
+            const claimButton = document.querySelector('button.kit-button.is-large.is-drop.is-fill.button.is-done');
+            const startFarmingButton = document.querySelector('button.kit-button.is-large.is-primary.is-fill.button');
+            const continueButton = document.querySelector('button.kit-button.is-large.is-primary.is-fill.btn');
+            const playHighlightedButton = document.querySelector('button.kit-button.is-large.is-primary.highlighted-btn');
+            const playLinkButton = document.querySelector('a.play-btn[href="/game"]');
+            if (claimButton) {
+                claimButton.click();
+            } else if (startFarmingButton) {
+                startFarmingButton.click();
+            } else if (continueButton) {
+                continueButton.click();
+            } else if (playHighlightedButton) {
+                playHighlightedButton.click();
+            } else if (playLinkButton) {
+                playLinkButton.click();
+            }
+        }, Math.floor(Math.random() * 5000) + 5000);
+    }
 
     function continuousPlayButtonCheck() {
         checkAndClickPlayButton();
+        checkAndClickResetButton();
+        AutoClaimAndStart();
         setTimeout(continuousPlayButtonCheck, 1000);
     }
 
@@ -196,7 +240,8 @@ try {
                 { label: '💣 Bomb %', settingName: 'bomb' },
                 { label: '🧊 Ice %', settingName: 'ice' },
                 { label: '🍀 Flower %', settingName: 'flower' },
-                { label: '🐶 DOGS %', settingName: 'dogs' }
+                { label: '👱🏻‍♂️ TRUMP %', settingName: 'trump' },
+                { label: '👩🏻 HARRIS %', settingName: 'harris' },
             ];
 
             items.forEach(item => {
@@ -228,14 +273,12 @@ try {
         isGamePaused = !isGamePaused;
         if (isGamePaused) {
             pauseButton.textContent = '▶';
-            GAME_SETTINGS.autoClickPlay = false;
         } else {
             pauseButton.textContent = '❚❚';
-            GAME_SETTINGS.autoClickPlay = true;
             continuousPlayButtonCheck();
         }
     }
 
 } catch (e) {
-    console.error("!BlumFarm! error:", e);
+    console.error("Blum Autoclicker error:", e);
 }
