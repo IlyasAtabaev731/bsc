@@ -23,7 +23,7 @@ let GAME_SETTINGS = {
     autoClickPlay: true,
 };
 
-let isGamePaused = true;
+let isGamePaused = false;
 let isSettingsOpen = false;
 
 try {
