@@ -15,10 +15,10 @@ let GAME_SETTINGS = {
     clickPercentage: {
         bomb: 0,
         ice: Math.floor(Math.random() * 2) + 2,
-        flower: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
-        dogs: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
-        trump: 100,
-        harris: 100,
+        flower: Math.floor(Math.random() * (95 - 85 + 1)) + 85,
+        // dogs: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
+        // trump: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
+        // harris: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
     },
     autoClickPlay: true,
 };
@@ -109,13 +109,11 @@ try {
     }
 
     function checkAndClickPlayButton() {
-        const playButtons = document.querySelectorAll('button.kit-button.is-large.is-primary, a.play-btn[href="/game"], button.kit-button.is-large.is-primary');
-
+        const playButtons = document.querySelectorAll('a.play-btn[href="/game"]');
         playButtons.forEach(button => {
             const buttonText = button.textContent.trim();
             if (!isGamePaused && GAME_SETTINGS.autoClickPlay &&
-                (/Play/i.test(buttonText) || /Continue/i.test(buttonText) ||
-                 /Играть/i.test(buttonText) || /Продолжить/i.test(buttonText))) {
+                (/Play/i.test(buttonText) || /Играть/i.test(buttonText))) {
                 setTimeout(() => {
                     button.click();
                     gameStats.isGameOver = false;
@@ -123,6 +121,21 @@ try {
             }
         });
     }
+
+    function clickElementWithRandomDelay(button) {
+        const delay = Math.floor(Math.random() * (3000 - 1000 + 1)) + 1000;
+        setTimeout(() => {
+            button.click();
+        }, delay);
+    }
+
+    function clickAdditionalButton() {
+        const specificButton = document.querySelector('button.kit-button.is-large.is-primary');
+        if (specificButton) {
+            clickElementWithRandomDelay(specificButton);
+        }
+    }
+
     function checkAndClickResetButton() {
         const errorPage = document.querySelector('div[data-v-26af7de6].error.page.wrapper');
         if (errorPage) {
@@ -157,6 +170,7 @@ try {
     function continuousPlayButtonCheck() {
         checkAndClickPlayButton();
         checkAndClickResetButton();
+        clickAdditionalButton();
         AutoClaimAndStart();
         setTimeout(continuousPlayButtonCheck, 1000);
     }
@@ -240,8 +254,8 @@ try {
                 { label: '💣 Bomb %', settingName: 'bomb' },
                 { label: '🧊 Ice %', settingName: 'ice' },
                 { label: '🍀 Flower %', settingName: 'flower' },
-                { label: '👱🏻‍♂️ TRUMP %', settingName: 'trump' },
-                { label: '👩🏻 HARRIS %', settingName: 'harris' },
+                // { label: '👱🏻‍♂️ TRUMP %', settingName: 'trump' },
+                // { label: '👩🏻 HARRIS %', settingName: 'harris' },
             ];
 
             items.forEach(item => {
