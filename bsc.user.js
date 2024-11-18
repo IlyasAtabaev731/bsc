@@ -13,12 +13,9 @@
 
 let GAME_SETTINGS = {
     clickPercentage: {
-        bomb: 0,
+        bomb: Math.floor(Math.random() * 2),
         ice: Math.floor(Math.random() * 2) + 2,
-        flower: Math.floor(Math.random() * (95 - 85 + 1)) + 85,
-        // dogs: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
-        // trump: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
-        // harris: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
+        flower: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
     },
     autoClickPlay: true,
 };
@@ -31,9 +28,6 @@ try {
         score: 0,
         bombHits: 0,
         iceHits: 0,
-        dogsHits: 0,
-        trumpHits: 0,
-        harrisHits: 0,
         flowersSkipped: 0,
         isGameOver: false,
     };
@@ -47,8 +41,7 @@ try {
     };
 
     async function handleGameElement(element) {
-        if (!element || !element.asset) return;
-
+        if (isGamePaused || !element || !element.asset) return;
         const { assetType } = element.asset;
         const randomValue = Math.random() * 100;
 
@@ -68,36 +61,25 @@ try {
                     await clickElementWithDelay(element);
                 }
                 break;
-            case "DOGS":
-                if (randomValue < GAME_SETTINGS.clickPercentage.dogs) {
-                    await clickElementWithDelay(element);
-                }
-                break;
-            case "TRUMP":
-                if (randomValue < GAME_SETTINGS.clickPercentage.trump) {
-                    await clickElementWithDelay(element);
-                }
-                break;
-            case "HARRIS":
-                if (randomValue < GAME_SETTINGS.clickPercentage.harris) {
-                    await clickElementWithDelay(element);
-                }
-                break;
             default:
                 console.log(`Unknown element type: ${assetType}`);
         }
     }
 
     function clickElementWithDelay(element) {
+        if (isGamePaused) return;
         const clickDelay = Math.floor(Math.random() * (1500 - 200 + 1)) + 200;
         setTimeout(() => {
-            element.onClick(element);
-            element.isExplosion = true;
-            element.addedAt = performance.now();
+            if (!isGamePaused) {
+                element.onClick(element);
+                element.isExplosion = true;
+                element.addedAt = performance.now();
+            }
         }, clickDelay);
     }
 
     function checkGameCompletion() {
+        if (isGamePaused) return;
         const rewardElement = document.querySelector('#app > div > div > div.content > div.reward');
         if (rewardElement && !gameStats.isGameOver) {
             gameStats.isGameOver = true;
@@ -108,74 +90,97 @@ try {
         return Math.floor(Math.random() * (3000 - 1000 + 1)) + 1000;
     }
 
+
     function checkAndClickPlayButton() {
-        const playButtons = document.querySelectorAll('a.play-btn[href="/game"]');
+        const playButtons = document.querySelectorAll('button.kit-button.is-large.is-primary, a.play-btn[href="/game"], button.kit-button.is-large.is-primary');
+        const delay = Math.random() * (5000 - 2000) + 2000; // Задержка от 2 до 5 секунд
+
         playButtons.forEach(button => {
-            const buttonText = button.textContent.trim();
-            if (!isGamePaused && GAME_SETTINGS.autoClickPlay &&
-                (/Play/i.test(buttonText) || /Играть/i.test(buttonText))) {
+            if (!isGamePaused && GAME_SETTINGS.autoClickPlay && button.textContent.trim().length > 0) {
                 setTimeout(() => {
-                    button.click();
-                    gameStats.isGameOver = false;
-                }, getNewGameDelay());
+                    if (!isGamePaused) {
+                        gameStats.isGameOver = true;
+                        resetGameStats();
+                        button.click();
+                    }
+                }, delay);
             }
         });
     }
 
-    function clickElementWithRandomDelay(button) {
-        const delay = Math.floor(Math.random() * (3000 - 1000 + 1)) + 1000;
-        setTimeout(() => {
-            button.click();
-        }, delay);
-    }
 
     function clickAdditionalButton() {
         const specificButton = document.querySelector('button.kit-button.is-large.is-primary');
+        const delay = Math.random() * (5000 - 2000) + 2000; // Задержка от 2 до 5 секунд
+
         if (specificButton) {
-            clickElementWithRandomDelay(specificButton);
+            setTimeout(() => {
+                if (!isGamePaused) specificButton.click();
+            }, delay);
         }
     }
 
+
     function checkAndClickResetButton() {
         const errorPage = document.querySelector('div[data-v-26af7de6].error.page.wrapper');
+        const delay = Math.random() * (5000 - 2000) + 2000; // Задержка от 2 до 5 секунд
+
         if (errorPage) {
             const resetButton = errorPage.querySelector('button.reset');
             if (resetButton) {
-                resetButton.click();
+                setTimeout(() => {
+                    if (!isGamePaused) resetButton.click();
+                }, delay);
             }
         }
     }
 
     function AutoClaimAndStart() {
         setInterval(() => {
+            if (isGamePaused) return;
+
             const claimButton = document.querySelector('button.kit-button.is-large.is-drop.is-fill.button.is-done');
             const startFarmingButton = document.querySelector('button.kit-button.is-large.is-primary.is-fill.button');
             const continueButton = document.querySelector('button.kit-button.is-large.is-primary.is-fill.btn');
             const playHighlightedButton = document.querySelector('button.kit-button.is-large.is-primary.highlighted-btn');
             const playLinkButton = document.querySelector('a.play-btn[href="/game"]');
+
+            const delay = Math.random() * (5000 - 2000) + 2000; // Задержка от 2 до 5 секунд
+
             if (claimButton) {
-                claimButton.click();
+                setTimeout(() => {
+                    if (!isGamePaused) claimButton.click();
+                }, delay);
             } else if (startFarmingButton) {
-                startFarmingButton.click();
+                setTimeout(() => {
+                    if (!isGamePaused) startFarmingButton.click();
+                }, delay);
             } else if (continueButton) {
-                continueButton.click();
+                setTimeout(() => {
+                    if (!isGamePaused) continueButton.click();
+                }, delay);
             } else if (playHighlightedButton) {
-                playHighlightedButton.click();
+                setTimeout(() => {
+                    if (!isGamePaused) playHighlightedButton.click();
+                }, delay);
             } else if (playLinkButton) {
-                playLinkButton.click();
+                setTimeout(() => {
+                    if (!isGamePaused) playLinkButton.click();
+                }, delay);
             }
         }, Math.floor(Math.random() * 5000) + 5000);
     }
 
     function continuousPlayButtonCheck() {
+        if (isGamePaused) return;
         checkAndClickPlayButton();
         checkAndClickResetButton();
         clickAdditionalButton();
-        AutoClaimAndStart();
         setTimeout(continuousPlayButtonCheck, 1000);
     }
 
     const observer = new MutationObserver(mutations => {
+        if (isGamePaused) return;
         for (const mutation of mutations) {
             if (mutation.type === 'childList') {
                 checkGameCompletion();
@@ -199,20 +204,13 @@ try {
     controlsContainer.style.borderRadius = '10px';
     document.body.appendChild(controlsContainer);
 
-    const OutGamePausedTrue = document.createElement('a');
-    OutGamePausedTrue.textContent = atob('VEc6IEtpdHRlbldvZg==');
-    OutGamePausedTrue.style.color = 'white';
-    OutGamePausedTrue.style.display = 'block';
-    OutGamePausedTrue.style.textAlign = 'center';
-    controlsContainer.appendChild(OutGamePausedTrue);
-
     const buttonsContainer = document.createElement('div');
     buttonsContainer.style.display = 'flex';
     buttonsContainer.style.justifyContent = 'center';
     controlsContainer.appendChild(buttonsContainer);
 
     const pauseButton = document.createElement('button');
-    pauseButton.textContent = '▶';
+    pauseButton.textContent = '❚❚';
     pauseButton.style.padding = '4px 8px';
     pauseButton.style.backgroundColor = '#5d2a8f';
     pauseButton.style.color = 'white';
@@ -220,9 +218,7 @@ try {
     pauseButton.style.borderRadius = '10px';
     pauseButton.style.cursor = 'pointer';
     pauseButton.style.marginRight = '5px';
-    pauseButton.onclick = () => {
-        toggleGamePause();
-    };
+    pauseButton.onclick = toggleGamePause;
     buttonsContainer.appendChild(pauseButton);
 
     const settingsButton = document.createElement('button');
@@ -254,8 +250,6 @@ try {
                 { label: '💣 Bomb %', settingName: 'bomb' },
                 { label: '🧊 Ice %', settingName: 'ice' },
                 { label: '🍀 Flower %', settingName: 'flower' },
-                // { label: '👱🏻‍♂️ TRUMP %', settingName: 'trump' },
-                // { label: '👩🏻 HARRIS %', settingName: 'harris' },
             ];
 
             items.forEach(item => {
@@ -285,13 +279,14 @@ try {
 
     function toggleGamePause() {
         isGamePaused = !isGamePaused;
-        if (isGamePaused) {
-            pauseButton.textContent = '▶';
-        } else {
-            pauseButton.textContent = '❚❚';
+        pauseButton.textContent = isGamePaused ? '▶' : '❚❚';
+        if (!isGamePaused) {
             continuousPlayButtonCheck();
         }
     }
+
+    AutoClaimAndStart();
+    continuousPlayButtonCheck();
 
 } catch (e) {
     console.error("Blum Autoclicker error:", e);

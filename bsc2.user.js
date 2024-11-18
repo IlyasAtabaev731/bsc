@@ -3,7 +3,7 @@
 // @version      1.1
 // @namespace    Violentmonkey Scripts
 // @author       KittenWoof
-// @match        https://telegram.blum.codes/*
+// @match        https://web.telegram.org/*
 // @grant        none
 // @icon         https://raw.githubusercontent.com/ilfae/ilfae/main/logo.webp
 // @updateURL    https://github.com/IlyasAtabaev731/bsc/raw/main/bsc2.user.js
@@ -14,71 +14,54 @@
 (function() {
   'use strict';
 
-  const claimButtonSelector = 'button.kit-button.is-large.is-drop.is-fill.button.is-done';
-  const startFarmingButtonSelector = 'button.kit-button.is-large.is-primary.is-fill.button';
-  const reloadButtonSelector = 'button.reset';  // Добавляем новый селектор для кнопки "Обновить"
-  const clickerIntervalMilliseconds = 300;
+  function waitForElement(selector, callback, timeout = 10000) {
+      const startTime = Date.now();
+      const interval = setInterval(() => {
+          const element = document.querySelector(selector);
+          if (element) {
+              clearInterval(interval);
+              callback(element);
+          }
+          if (Date.now() - startTime > timeout) {
+              clearInterval(interval);
+          }
+      }, 100);
+  }
 
   function clickButton(selector) {
-    const button = document.querySelector(selector);
-    if (button) {
-      button.click();
-    }
+      waitForElement(selector, (button) => {
+          if (button instanceof HTMLElement && button.offsetParent !== null) {
+              button.click();
+          }
+      });
   }
 
-  function startClicker() {
-    setInterval(() => {
-      clickButton(claimButtonSelector);
-      clickButton(startFarmingButtonSelector);
-      clickButton(reloadButtonSelector);  // Клик по кнопке "Обновить"
-    }, clickerIntervalMilliseconds);
+  function performInitialClicks() {
+      setTimeout(() => {
+          clickButton('div.reply-markup-row button.rp');
+          clickButton('button.popup-button.btn.primary.rp');
+          clickButton('div.btn-menu-item.rp-overflow');
+      }, 2000);
   }
 
-  function removeTabsButtons() {
-    const buttons = document.querySelectorAll('.layout-tabs.tabs a.tab');
-    buttons.forEach(button => {
-      const label = button.querySelector('.label');
-      if (label && (label.textContent.trim() === 'Frens' || label.textContent.trim() === 'Tasks' || label.textContent.trim() === 'Wallet')) {
-        button.parentNode.removeChild(button);
-      }
-    });
+  function performRepeatClicks() {
+      clickButton('button.btn-icon._BrowserHeaderButton_m63td_65');
+      setTimeout(() => {
+          clickButton('button.popup-button.btn.danger.rp');
+      }, 1000);
+      setTimeout(() => {
+          performInitialClicks();
+      }, 2000);
   }
 
-  function removeGameButtons() {
-    const buttons = document.querySelectorAll('.buttons button');
-    buttons.forEach(button => {
-      const label = button.querySelector('.label');
-      if (label && (label.textContent.includes('Invite') || label.textContent.includes('Share you win'))) {
-        button.parentNode.removeChild(button);
-      }
-    });
-  }
-
-  function removeCustomButtons() {
-    // Более точный селектор для кнопки Earn
-    const earnButton = document.querySelector('a.tab[href="/tasks"]');
-    if (earnButton) {
-      earnButton.remove();
-    }
-
-    // Удаление кнопки Open
-    const openButton = document.querySelector('a.btn');
-    if (openButton) {
-      openButton.remove();
-    }
-  }
-
-  function checkAndRemoveButtons() {
-    removeTabsButtons();
-    removeGameButtons();
-    removeCustomButtons();
+  function initialize() {
+      performInitialClicks();
+      setInterval(() => {
+          performRepeatClicks();
+      }, 600000);
   }
 
   window.addEventListener('load', () => {
-    startClicker();
-
-    checkAndRemoveButtons();
-    setInterval(checkAndRemoveButtons, 1000);
+      initialize();
   });
-
 })();
