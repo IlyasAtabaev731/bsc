@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         !BlumFarm!
-// @version      2.4.4
+// @version      2.9.3
 // @namespace    Violentmonkey Scripts
 // @author       KittenWoof
 // @match        https://telegram.blum.codes/*
@@ -13,7 +13,7 @@
 
 let GAME_SETTINGS = {
     clickPercentage: {
-        bomb: Math.floor(Math.random() * 2),
+        bomb: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
         ice: Math.floor(Math.random() * 2) + 2,
         flower: Math.floor(Math.random() * (90 - 80 + 1)) + 80,
     },
@@ -61,8 +61,6 @@ try {
                     await clickElementWithDelay(element);
                 }
                 break;
-            default:
-                console.log(`Unknown element type: ${assetType}`);
         }
     }
 
@@ -90,10 +88,9 @@ try {
         return Math.floor(Math.random() * (3000 - 1000 + 1)) + 1000;
     }
 
-
     function checkAndClickPlayButton() {
         const playButtons = document.querySelectorAll('button.kit-button.is-large.is-primary, a.play-btn[href="/game"], button.kit-button.is-large.is-primary');
-        const delay = Math.random() * (5000 - 2000) + 2000; // Задержка от 2 до 5 секунд
+        const delay = Math.random() * (5000 - 2000) + 2000;
 
         playButtons.forEach(button => {
             if (!isGamePaused && GAME_SETTINGS.autoClickPlay && button.textContent.trim().length > 0) {
@@ -108,10 +105,19 @@ try {
         });
     }
 
+    function resetGameStats() {
+        gameStats = {
+            score: 0,
+            bombHits: 0,
+            iceHits: 0,
+            flowersSkipped: 0,
+            isGameOver: false,
+        };
+    }
 
     function clickAdditionalButton() {
         const specificButton = document.querySelector('button.kit-button.is-large.is-primary');
-        const delay = Math.random() * (5000 - 2000) + 2000; // Задержка от 2 до 5 секунд
+        const delay = Math.random() * (5000 - 2000) + 2000;
 
         if (specificButton) {
             setTimeout(() => {
@@ -120,10 +126,9 @@ try {
         }
     }
 
-
     function checkAndClickResetButton() {
         const errorPage = document.querySelector('div[data-v-26af7de6].error.page.wrapper');
-        const delay = Math.random() * (5000 - 2000) + 2000; // Задержка от 2 до 5 секунд
+        const delay = Math.random() * (5000 - 2000) + 2000;
 
         if (errorPage) {
             const resetButton = errorPage.querySelector('button.reset');
@@ -145,31 +150,45 @@ try {
             const playHighlightedButton = document.querySelector('button.kit-button.is-large.is-primary.highlighted-btn');
             const playLinkButton = document.querySelector('a.play-btn[href="/game"]');
 
-            const delay = Math.random() * (5000 - 2000) + 2000; // Задержка от 2 до 5 секунд
+            const delay = Math.random() * (5000 - 2000) + 2000;
+
 
             if (claimButton) {
-                setTimeout(() => {
-                    if (!isGamePaused) claimButton.click();
-                }, delay);
+                setTimeout(() => { if (!isGamePaused) claimButton.click(); }, delay);
+
             } else if (startFarmingButton) {
-                setTimeout(() => {
-                    if (!isGamePaused) startFarmingButton.click();
-                }, delay);
+                setTimeout(() => { if (!isGamePaused) startFarmingButton.click(); }, delay);
+
             } else if (continueButton) {
-                setTimeout(() => {
-                    if (!isGamePaused) continueButton.click();
-                }, delay);
+                setTimeout(() => { if (!isGamePaused) continueButton.click(); }, delay);
+
             } else if (playHighlightedButton) {
-                setTimeout(() => {
-                    if (!isGamePaused) playHighlightedButton.click();
-                }, delay);
+                setTimeout(() => { if (!isGamePaused) playHighlightedButton.click(); }, delay);
+
             } else if (playLinkButton) {
-                setTimeout(() => {
-                    if (!isGamePaused) playLinkButton.click();
-                }, delay);
+                setTimeout(() => { if (!isGamePaused) playLinkButton.click(); }, delay);
             }
+
+
+
+
         }, Math.floor(Math.random() * 5000) + 5000);
     }
+
+
+    function clickFirstTab() {
+        const firstTab = document.querySelector('#app > div.layout-tabs.tabs > a:nth-child(1)');
+        if (firstTab) {
+            firstTab.click();
+        }
+    }
+
+    function checkForFirstTabAndClick() {
+        if (isGamePaused) return;
+        clickFirstTab();
+        setTimeout(checkForFirstTabAndClick, 5000);
+    }
+
 
     function continuousPlayButtonCheck() {
         if (isGamePaused) return;
@@ -178,6 +197,8 @@ try {
         clickAdditionalButton();
         setTimeout(continuousPlayButtonCheck, 1000);
     }
+
+
 
     const observer = new MutationObserver(mutations => {
         if (isGamePaused) return;
@@ -193,6 +214,8 @@ try {
         observer.observe(appElement, { childList: true, subtree: true });
     }
 
+
+
     const controlsContainer = document.createElement('div');
     controlsContainer.style.position = 'fixed';
     controlsContainer.style.top = '0';
@@ -204,12 +227,14 @@ try {
     controlsContainer.style.borderRadius = '10px';
     document.body.appendChild(controlsContainer);
 
+
     const buttonsContainer = document.createElement('div');
     buttonsContainer.style.display = 'flex';
     buttonsContainer.style.justifyContent = 'center';
     controlsContainer.appendChild(buttonsContainer);
 
     const pauseButton = document.createElement('button');
+
     pauseButton.textContent = '❚❚';
     pauseButton.style.padding = '4px 8px';
     pauseButton.style.backgroundColor = '#5d2a8f';
@@ -220,6 +245,7 @@ try {
     pauseButton.style.marginRight = '5px';
     pauseButton.onclick = toggleGamePause;
     buttonsContainer.appendChild(pauseButton);
+
 
     const settingsButton = document.createElement('button');
     settingsButton.textContent = '⛯';
@@ -232,10 +258,12 @@ try {
     settingsButton.onclick = toggleSettings;
     buttonsContainer.appendChild(settingsButton);
 
+
     const settingsContainer = document.createElement('div');
     settingsContainer.style.display = 'none';
     settingsContainer.style.marginTop = '10px';
     controlsContainer.appendChild(settingsContainer);
+
 
     function toggleSettings() {
         isSettingsOpen = !isSettingsOpen;
@@ -246,17 +274,22 @@ try {
             const table = document.createElement('table');
             table.style.color = 'white';
 
+
             const items = [
-                { label: '💣 Bomb %', settingName: 'bomb' },
-                { label: '🧊 Ice %', settingName: 'ice' },
-                { label: '🍀 Flower %', settingName: 'flower' },
+                { label: '🎇 Bomb %', settingName: 'bomb' },
+                { label: '❄️ Ice %', settingName: 'ice' },
+                { label: '🎄 Flower %', settingName: 'flower' },
+
             ];
+
 
             items.forEach(item => {
                 const row = table.insertRow();
 
+
                 const labelCell = row.insertCell();
                 labelCell.textContent = item.label;
+
 
                 const inputCell = row.insertCell();
                 const inputElement = document.createElement('input');
@@ -269,13 +302,17 @@ try {
                     GAME_SETTINGS.clickPercentage[item.settingName] = parseInt(inputElement.value, 10);
                 });
                 inputCell.appendChild(inputElement);
+
             });
 
+
             settingsContainer.appendChild(table);
+
         } else {
             settingsContainer.style.display = 'none';
         }
     }
+
 
     function toggleGamePause() {
         isGamePaused = !isGamePaused;
@@ -285,9 +322,10 @@ try {
         }
     }
 
+
+
     AutoClaimAndStart();
     continuousPlayButtonCheck();
+    checkForFirstTabAndClick();
 
-} catch (e) {
-    console.error("Blum Autoclicker error:", e);
-}
+} catch (e) { }
